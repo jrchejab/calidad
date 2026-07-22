@@ -1,10 +1,16 @@
 services:
   app:
-    image: kkmadhpuriya/rukovoditel:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: unless-stopped
     environment:
       - SERVER_NAME=${DOMAIN:-localhost}
-      - ENABLE_SSL=false
+      - ENABLE_SSL=true
+      - DB_HOST=mysql
+      - DB_USER=${MYSQL_USER:-admin}
+      - DB_PASSWORD=${MYSQL_PASSWORD:-calidad_password}
+      - DB_NAME=${MYSQL_DATABASE:-db_calidad}
     depends_on:
       mysql:
         condition: service_healthy
@@ -26,8 +32,8 @@ services:
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_password}
-      - MYSQL_DATABASE=${MYSQL_DATABASE:-calidad}
-      - MYSQL_USER=${MYSQL_USER:-calidad_user}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-db_calidad}
+      - MYSQL_USER=${MYSQL_USER:-admin}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD:-calidad_password}
     volumes:
       - mysql_data:/var/lib/mysql
