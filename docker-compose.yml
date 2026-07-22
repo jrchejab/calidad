@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      - SERVER_NAME=${DOMAIN:-localhost}
+      - SERVER_NAME=${SERVICE_FQDN_APP}
       - ENABLE_SSL=true
       - DB_HOST=mysql
       - DB_USER=${MYSQL_USER:-admin}
@@ -16,12 +16,12 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.calidad.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.calidad.rule=Host(`${SERVICE_FQDN_APP}`)"
       - "traefik.http.services.calidad.loadbalancer.server.port=80"
       - "traefik.http.routers.calidad.entrypoints=websecure"
       - "traefik.http.routers.calidad.tls=true"
       - "traefik.http.routers.calidad.tls.certresolver=coolify"
-      - "traefik.http.routers.calidad-http.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.calidad-http.rule=Host(`${SERVICE_FQDN_APP}`)"
       - "traefik.http.routers.calidad-http.entrypoints=web"
       - "traefik.http.routers.calidad-http.middlewares=redirect-to-https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
